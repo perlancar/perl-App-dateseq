@@ -9,7 +9,7 @@ use warnings;
 
 our %SPEC;
 
-$SPEC{seq} = {
+$SPEC{dateseq} = {
     v => 1.1,
     summary => 'Generate a sequence of dates',
     description => <<'_',
@@ -18,22 +18,36 @@ This utility is similar to Unix `seq` command, except that it generates a
 sequence of dates.
 
 _
-    #args_rels => {
-    #},
+    args_rels => {
+        'choose_one&' => [
+            [qw/business business6/],
+        ],
+    },
     args => {
         from => {
             schema => 'date*',
+            'x.perl.coerce_to_datetime_obj' => 1,
             req => 1,
             pos => 0,
         },
         to => {
             schema => 'date*',
+            'x.perl.coerce_to_datetime_obj' => 1,
             pos => 1,
         },
         increment => {
             schema => 'duration*',
+            'x.perl.coerce_to_datetime_duration_obj' => 1,
             cmdline_aliases => {i=>{}},
             pos => 2,
+        },
+        business => {
+            summary => 'Only list business days (Mon-Fri)',
+            schema => ['bool*', is=>1],
+        },
+        business6 => {
+            summary => 'Only list business days (Mon-Sat)',
+            schema => ['bool*', is=>1],
         },
         header => {
             summary => 'Add a header row',
@@ -45,35 +59,46 @@ _
             cmdline_aliases => {n=>{}},
         },
         date_format => {
-            summary => 'strptime() format for each date',
+            summary => 'strftime() format for each date',
             schema => ['str*'],
             cmdline_aliases => {f=>{}},
         },
     },
     examples => [
         {
-            summary => 'Generate dates from 2015-01-01 to 2015-03-31',
-            src => 'dateseq 2015-01-01 2015-03-31',
+            summary => 'Generate dates from 2015-01-01 to 2015-01-31',
+            src => 'dateseq 2015-01-01 2015-01-31',
             src_plang => 'bash',
         },
         {
             summary => 'Generate dates with increment of 3 days',
-            src => 'dateseq 2015-01-01 2015-03-31 -i P3D',
+            src => 'dateseq 2015-01-01 2015-01-31 -i P3D',
             src_plang => 'bash',
         },
         {
-            summary => 'Generate dates with increment of 3 days',
-            src => 'dateseq 2015-01-01 2015-03-31 -i P3D',
+            summary => 'Generate periods (YYYY-MM)',
+            src => 'dateseq 2010-01-01 2015-12-31 -i P1M -f "%Y-%m"',
             src_plang => 'bash',
         },
         {
-            summary => 'Format dates, use with fsql',
+            summary => 'List non-holidays in 2015 (using Indonesian holidays)',
+            src => 'setop --diff <(dateseq 2015-01-01 2015-12-31) <(list-id-holidays --year 2015)',
+            src_plang => 'bash',
+        },
+        {
+            summary => 'List non-holidays business days in 2015 (using Indonesian holidays)',
+            src => 'setop --diff <(dateseq 2015-01-01 2015-12-31 --business) <(list-id-holidays --year 2015)',
+            src_plang => 'bash',
+        },
+        {
+            summary => 'Use with fsql',
             src => q[dateseq 2010-01-01 2015-12-01 -f "%Y,%m" -i P1M --header "year,month" | fsql --add-csv - --add-csv data.csv -F YEAR -F MONTH 'SELECT year, month, data1 FROM stdin WHERE YEAR(data.date)=year AND MONTH(data.date)=month'],
             src_plang => 'bash',
         },
     ],
 };
-sub seq {
+sub dateseq {
+    require DateTime::Duration;
     require DateTime::Format::Strptime;
 
     my %args = @_;
@@ -83,12 +108,27 @@ sub seq {
         pattern => $fmt,
     );
 
+    $args{increment} //= DateTime::Duration->new(days=>1);
+
+    my $code_filter = sub {
+        my $dt = shift;
+        if ($args{business}) {
+            my $dow = $dt->day_of_week;
+            return 0 if $dow >= 6;
+        }
+        if ($args{business6}) {
+            my $dow = $dt->day_of_week;
+            return 0 if $dow >= 7;
+        }
+        1;
+    };
+
     if (defined $args{to}) {
         my @res;
         push @res, $args{header} if $args{header};
         my $dt = $args{from}->clone;
         while (DateTime->compare($dt, $args{to}) <= 0) {
-            push @res, $strp->format_datetime($dt);
+            push @res, $strp->format_datetime($dt) if $code_filter->($dt);
             last if defined($args{limit}) && @res >= $args{limit};
             $dt = $dt + $args{increment};
         }
@@ -99,15 +139,23 @@ sub seq {
         my $j  = $args{header} ? -1 : 0;
         my $next_dt;
         #my $finish;
-        my $func = sub {
+        my $func0 = sub {
             #return undef if $finish;
             $dt = $next_dt if $j++ > 0;
             return $args{header} if $j == 0 && $args{header};
             $next_dt = $dt + $args{increment};
             #$finish = 1 if ...
-            return $strp->format_datetime($dt);
+            return $dt;
         };
-        return [200, "OK", $func, {stream=>1}];
+        my $filtered_func = sub {
+            while (1) {
+                my $dt = $func0->();
+                return undef unless defined $dt;
+                last if $code_filter->($dt);
+            }
+            $strp->format_datetime($dt);
+        };
+        return [200, "OK", $filtered_func, {stream=>1}];
     }
 }
 
