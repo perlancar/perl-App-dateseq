@@ -25,12 +25,14 @@ _
     },
     args => {
         from => {
+            summary => 'Starting date',
             schema => 'date*',
             'x.perl.coerce_to_datetime_obj' => 1,
             req => 1,
             pos => 0,
         },
         to => {
+            summary => 'End date, if not specified will generate an infinite* stream of dates',
             schema => 'date*',
             'x.perl.coerce_to_datetime_obj' => 1,
             pos => 1,
@@ -73,6 +75,11 @@ _
         {
             summary => 'Generate dates with increment of 3 days',
             src => 'dateseq 2015-01-01 2015-01-31 -i P3D',
+            src_plang => 'bash',
+        },
+        {
+            summary => 'Generate a CSV data',
+            src => 'dateseq 2010-01-01 2015-01-31 -f "%Y,%m,%d" --header "year,month,day"',
             src_plang => 'bash',
         },
         {
