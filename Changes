@@ -1,5 +1,11 @@
 Revision history for App-dateseq
 
+0.04    2015-09-25 (PERLANCAR)
+
+	- Adjust to Perinci::Sub::CoerceArgs 0.10+ (change coercion hint
+	  attribute).
+
+
 0.03    2015-08-18 (PERLANCAR)
 
 	- No functional changes.
