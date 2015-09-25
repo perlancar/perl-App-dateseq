@@ -69,37 +69,37 @@ _
     examples => [
         {
             summary => 'Generate dates from 2015-01-01 to 2015-01-31',
-            src => 'dateseq 2015-01-01 2015-01-31',
+            src => '[[prog]] 2015-01-01 2015-01-31',
             src_plang => 'bash',
         },
         {
             summary => 'Generate dates with increment of 3 days',
-            src => 'dateseq 2015-01-01 2015-01-31 -i P3D',
+            src => '[[prog]] 2015-01-01 2015-01-31 -i P3D',
             src_plang => 'bash',
         },
         {
             summary => 'Generate a CSV data',
-            src => 'dateseq 2010-01-01 2015-01-31 -f "%Y,%m,%d" --header "year,month,day"',
+            src => '[[prog]] 2010-01-01 2015-01-31 -f "%Y,%m,%d" --header "year,month,day"',
             src_plang => 'bash',
         },
         {
             summary => 'Generate periods (YYYY-MM)',
-            src => 'dateseq 2010-01-01 2015-12-31 -i P1M -f "%Y-%m"',
+            src => '[[prog]] 2010-01-01 2015-12-31 -i P1M -f "%Y-%m"',
             src_plang => 'bash',
         },
         {
             summary => 'List non-holidays in 2015 (using Indonesian holidays)',
-            src => 'setop --diff <(dateseq 2015-01-01 2015-12-31) <(list-id-holidays --year 2015)',
+            src => 'setop --diff <([[prog]] 2015-01-01 2015-12-31) <(list-id-holidays --year 2015)',
             src_plang => 'bash',
         },
         {
             summary => 'List non-holidays business days in 2015 (using Indonesian holidays)',
-            src => 'setop --diff <(dateseq 2015-01-01 2015-12-31 --business) <(list-id-holidays --year 2015)',
+            src => 'setop --diff <([[prog]] 2015-01-01 2015-12-31 --business) <(list-id-holidays --year 2015)',
             src_plang => 'bash',
         },
         {
             summary => 'Use with fsql',
-            src => q[dateseq 2010-01-01 2015-12-01 -f "%Y,%m" -i P1M --header "year,month" | fsql --add-csv - --add-csv data.csv -F YEAR -F MONTH 'SELECT year, month, data1 FROM stdin WHERE YEAR(data.date)=year AND MONTH(data.date)=month'],
+            src => q{[[prog]] 2010-01-01 2015-12-01 -f "%Y,%m" -i P1M --header "year,month" | fsql --add-csv - --add-csv data.csv -F YEAR -F MONTH 'SELECT year, month, data1 FROM stdin WHERE YEAR(data.date)=year AND MONTH(data.date)=month'},
             src_plang => 'bash',
         },
     ],
