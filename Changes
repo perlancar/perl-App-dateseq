@@ -1,5 +1,13 @@
 Revision history for App-dateseq
 
+0.05    2015-09-25 (PERLANCAR)
+
+        - No functional changes.
+
+        - Rebuild with fixed Perinci::Sub::To::POD which skips showing non-Perl
+          examples in function documentation.
+
+
 0.04    2015-09-25 (PERLANCAR)
 
 	- Adjust to Perinci::Sub::CoerceArgs 0.10+ (change coercion hint
