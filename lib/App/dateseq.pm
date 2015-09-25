@@ -27,19 +27,19 @@ _
         from => {
             summary => 'Starting date',
             schema => 'date*',
-            'x.perl.coerce_to_datetime_obj' => 1,
+            'x.perl.coerce_to' => 'DateTime',
             req => 1,
             pos => 0,
         },
         to => {
             summary => 'End date, if not specified will generate an infinite* stream of dates',
             schema => 'date*',
-            'x.perl.coerce_to_datetime_obj' => 1,
+            'x.perl.coerce_to' => 'DateTime',
             pos => 1,
         },
         increment => {
             schema => 'duration*',
-            'x.perl.coerce_to_datetime_duration_obj' => 1,
+            'x.perl.coerce_to' => 'DateTime::Duration',
             cmdline_aliases => {i=>{}},
             pos => 2,
         },
