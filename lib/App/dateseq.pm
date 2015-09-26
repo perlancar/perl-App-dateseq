@@ -62,6 +62,12 @@ _
         },
         date_format => {
             summary => 'strftime() format for each date',
+            description => <<'_',
+
+Default is `%Y-%m-%d`, unless when hour/minute/second is specified, then it is
+`%Y-%m-%dT%H:%M:%S`.
+
+_
             schema => ['str*'],
             cmdline_aliases => {f=>{}},
         },
@@ -110,12 +116,27 @@ sub dateseq {
 
     my %args = @_;
 
-    my $fmt  = $args{date_format} // '%Y-%m-%d';
+    $args{increment} //= DateTime::Duration->new(days=>1);
+
+    my $fmt  = $args{date_format} // do {
+        my $has_hms;
+        {
+            if ($args{from}->hour || $args{from}->minute || $args{from}->second) {
+                $has_hms++; last;
+            }
+            if (defined($args{to}) &&
+                    ($args{to}->hour || $args{to}->minute || $args{to}->second)) {
+                $has_hms++; last;
+            }
+            if ($args{increment}->hours || $args{increment}->minutes || $args{increment}->seconds) {
+                $has_hms++; last;
+            }
+        }
+        $has_hms ? '%Y-%m-%dT%H:%M:%S' : '%Y-%m-%d';
+    };
     my $strp = DateTime::Format::Strptime->new(
         pattern => $fmt,
     );
-
-    $args{increment} //= DateTime::Duration->new(days=>1);
 
     my $code_filter = sub {
         my $dt = shift;
