@@ -1,5 +1,11 @@
 Revision history for App-dateseq
 
+0.06    2015-09-26 (PERLANCAR)
+
+	- [ux] Switch default format from '%Y-%m-%d' to '%Y-%m-%dT%H:%M:%S'
+	  if there is hour/minute/second mentioned.
+
+
 0.05    2015-09-25 (PERLANCAR)
 
         - No functional changes.
