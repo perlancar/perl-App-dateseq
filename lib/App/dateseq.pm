@@ -28,6 +28,7 @@ _
             summary => 'Starting date',
             schema => ['date*', {
                 'x.perl.coerce_to' => 'DateTime',
+                'x.perl.coerce_from' => ['str_alami_en'],
             }],
             req => 1,
             pos => 0,
@@ -36,6 +37,7 @@ _
             summary => 'End date, if not specified will generate an infinite* stream of dates',
             schema => ['date*', {
                 'x.perl.coerce_to' => 'DateTime',
+                'x.perl.coerce_from' => ['str_alami_en'],
             }],
             pos => 1,
         },
@@ -79,6 +81,11 @@ _
         {
             summary => 'Generate dates from 2015-01-01 to 2015-01-31',
             src => '[[prog]] 2015-01-01 2015-01-31',
+            src_plang => 'bash',
+        },
+        {
+            summary => 'Generate dates from 2015-01-01 to today',
+            src => '[[prog]] 2015-01-01 today',
             src_plang => 'bash',
         },
         {
