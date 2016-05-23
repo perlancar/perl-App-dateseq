@@ -28,7 +28,7 @@ _
             summary => 'Starting date',
             schema => ['date*', {
                 'x.perl.coerce_to' => 'DateTime',
-                'x.perl.coerce_from' => ['str_alami_en'],
+                'x.perl.coerce_rules' => ['str_alami_en'],
             }],
             req => 1,
             pos => 0,
@@ -37,7 +37,7 @@ _
             summary => 'End date, if not specified will generate an infinite* stream of dates',
             schema => ['date*', {
                 'x.perl.coerce_to' => 'DateTime',
-                'x.perl.coerce_from' => ['str_alami_en'],
+                'x.perl.coerce_rules' => ['str_alami_en'],
             }],
             pos => 1,
         },
