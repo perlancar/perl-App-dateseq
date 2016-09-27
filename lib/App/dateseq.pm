@@ -14,7 +14,7 @@ $SPEC{dateseq} = {
     summary => 'Generate a sequence of dates',
     description => <<'_',
 
-This utility is similar to Unix `seq` command, except that it generates a
+This utility is similar to Unix <prog:seq> command, except that it generates a
 sequence of dates.
 
 _
