@@ -125,9 +125,9 @@ _
         },
         {
             summary => 'Generate first 20 business days after 2015-01-01',
-            src => '[[prog]] 2015-01-01 --business -n 20',
+            src => '[[prog]] 2015-01-01 --business -n 20 -f "%Y-%m-%d(%a)"',
             src_plang => 'bash',
-            'x.doc.max_result_lines' => 5,
+            'x.doc.max_result_lines' => 10,
         },
         {
             summary => 'Generate first 5 non-business days (Sat/Sun) after 2015-01-01',
