@@ -48,6 +48,11 @@ _
             cmdline_aliases => {i=>{}},
             pos => 2,
         },
+        reverse => {
+            summary => 'Decrement instead of increment',
+            schema => 'true*',
+            cmdline_aliases => {r=>{}},
+        },
         business => {
             summary => 'Only list business days (Mon-Fri)',
             schema => ['bool*', is=>1],
@@ -85,14 +90,21 @@ _
             'x.doc.max_result_lines' => 5,
         },
         {
-            summary => 'Generate dates from 2015-01-01 to today',
-            src => '[[prog]] 2015-01-01 today',
+            summary => 'Generate dates from 2015-01-31 to 2015-01-01 (reverse)',
+            src => '[[prog]] 2015-01-31 2015-01-01 -r',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 5,
         },
         {
-            summary => 'Generate infinite dates from 2015-01-01',
+            summary => 'Generate "infinite" dates from 2015-01-01',
             src => '[[prog]] 2015-01-01',
+            src_plang => 'bash',
+            test => 0,
+            'x.doc.show_result' => 0,
+        },
+        {
+            summary => 'Generate "infinite" dates from 2015-01-01 (reverse)',
+            src => '[[prog]] 2015-01-01 -r',
             src_plang => 'bash',
             test => 0,
             'x.doc.show_result' => 0,
@@ -100,6 +112,12 @@ _
         {
             summary => 'Generate dates with increment of 3 days',
             src => '[[prog]] 2015-01-01 2015-01-31 -i P3D',
+            src_plang => 'bash',
+            'x.doc.max_result_lines' => 5,
+        },
+        {
+            summary => 'Generate dates with decrement of 3 days',
+            src => '[[prog]] 2015-01-31 2015-01-01 -i P3D -r',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 5,
         },
@@ -142,6 +160,7 @@ sub dateseq {
     my %args = @_;
 
     $args{increment} //= DateTime::Duration->new(days=>1);
+    my $reverse = $args{reverse};
 
     my $fmt  = $args{date_format} // do {
         my $has_hms;
@@ -176,14 +195,18 @@ sub dateseq {
         1;
     };
 
-    if (defined $args{to}) {
+    if (defined $args{to} || defined $args{limit}) {
         my @res;
         push @res, $args{header} if $args{header};
         my $dt = $args{from}->clone;
-        while (DateTime->compare($dt, $args{to}) <= 0) {
+        while (1) {
+            if (defined $args{to}) {
+                last if  $reverse && DateTime->compare($dt, $args{to}) <= 0;
+                last if !$reverse && DateTime->compare($dt, $args{to}) >= 0;
+            }
             push @res, $strp->format_datetime($dt) if $code_filter->($dt);
             last if defined($args{limit}) && @res >= $args{limit};
-            $dt = $dt + $args{increment};
+            $dt = $reverse ? $dt - $args{increment} : $dt + $args{increment};
         }
         return [200, "OK", \@res];
     } else {
@@ -196,7 +219,8 @@ sub dateseq {
             #return undef if $finish;
             $dt = $next_dt if $j++ > 0;
             return $args{header} if $j == 0 && $args{header};
-            $next_dt = $dt + $args{increment};
+            $next_dt = $reverse ?
+                $dt - $args{increment} : $dt + $args{increment};
             #$finish = 1 if ...
             return $dt;
         };
