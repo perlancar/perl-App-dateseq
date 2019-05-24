@@ -201,7 +201,7 @@ sub dateseq {
             }
             $strp->format_datetime($dt);
         };
-        return [200, "OK", $filtered_func, {stream=>1}];
+        return [200, "OK", $filtered_func, {schema=>'str*', stream=>1}];
     }
 }
 
