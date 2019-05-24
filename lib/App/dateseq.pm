@@ -223,7 +223,7 @@ sub dateseq {
         my $dt = $args{from}->clone;
         while (1) {
             if (defined $args{to}) {
-                last if  $reverse && DateTime->compare($dt, $args{to}) <= 0;
+                last if  $reverse && DateTime->compare($dt, $args{to}) <  0;
                 last if !$reverse && DateTime->compare($dt, $args{to}) >= 0;
             }
             push @res, $strp->format_datetime($dt) if $code_filter->($dt);
