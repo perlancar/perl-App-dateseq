@@ -1,3 +1,13 @@
+0.090   2019-05-24 (PERLANCAR)
+
+	- Add option --reverse (-r).
+
+	- Allow --no-business & --no-business6 in addition to --business &
+	  --business6.
+
+	- [doc] Add more examples (infinite, -n, r, --business & --no-business).
+
+
 0.08    2019-05-24 (PERLANCAR)
 
 	- [ux] [bugfix] Set schema for result (in stream case) to avoid
