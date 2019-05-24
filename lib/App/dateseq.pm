@@ -92,6 +92,12 @@ _
             'x.doc.max_result_lines' => 5,
         },
         {
+            summary => 'Generate dates from yesterday to 2 weeks from now',
+            src => '[[prog]] yesterday "in 2 weeks"',
+            src_plang => 'bash',
+            'x.doc.max_result_lines' => 5,
+        },
+        {
             summary => 'Generate dates from 2015-01-31 to 2015-01-01 (reverse)',
             src => '[[prog]] 2015-01-31 2015-01-01 -r',
             src_plang => 'bash',
