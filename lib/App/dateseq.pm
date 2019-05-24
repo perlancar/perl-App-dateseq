@@ -91,6 +91,13 @@ _
             'x.doc.max_result_lines' => 5,
         },
         {
+            summary => 'Generate infinite dates from 2015-01-01',
+            src => '[[prog]] 2015-01-01',
+            src_plang => 'bash',
+            test => 0,
+            'x.doc.show_result' => 0,
+        },
+        {
             summary => 'Generate dates with increment of 3 days',
             src => '[[prog]] 2015-01-01 2015-01-31 -i P3D',
             src_plang => 'bash',
