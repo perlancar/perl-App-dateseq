@@ -54,12 +54,14 @@ _
             cmdline_aliases => {r=>{}},
         },
         business => {
-            summary => 'Only list business days (Mon-Fri)',
-            schema => ['bool*', is=>1],
+            summary => 'Only list business days (Mon-Fri), '.
+                'or non-business days',
+            schema => ['bool*'],
         },
         business6 => {
-            summary => 'Only list business days (Mon-Sat)',
-            schema => ['bool*', is=>1],
+            summary => 'Only list business days (Mon-Sat), '.
+                'or non-business days',
+            schema => ['bool*'],
         },
         header => {
             summary => 'Add a header row',
@@ -122,8 +124,14 @@ _
             'x.doc.max_result_lines' => 5,
         },
         {
-            summary => 'Generate dates with decrement of 3 days',
-            src => '[[prog]] 2015-01-31 2015-01-01 -i P3D -r',
+            summary => 'Generate first 20 business days after 2015-01-01',
+            src => '[[prog]] 2015-01-01 --business -n 20',
+            src_plang => 'bash',
+            'x.doc.max_result_lines' => 5,
+        },
+        {
+            summary => 'Generate first 5 non-business days (Sat/Sun) after 2015-01-01',
+            src => '[[prog]] 2015-01-01 --no-business -n 5',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 5,
         },
@@ -190,13 +198,21 @@ sub dateseq {
 
     my $code_filter = sub {
         my $dt = shift;
-        if ($args{business}) {
+        if (defined $args{business}) {
             my $dow = $dt->day_of_week;
-            return 0 if $dow >= 6;
+            if ($args{business}) {
+                return 0 if $dow >= 6;
+            } else {
+                return 0 if $dow <  6;
+            }
         }
-        if ($args{business6}) {
+        if (defined $args{business6}) {
             my $dow = $dt->day_of_week;
-            return 0 if $dow >= 7;
+            if ($args{business6}) {
+                return 0 if $dow >= 7;
+            } else {
+                return 0 if $dow <  7;
+            }
         }
         1;
     };
