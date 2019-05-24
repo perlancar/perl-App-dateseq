@@ -110,6 +110,12 @@ _
             'x.doc.show_result' => 0,
         },
         {
+            summary => 'Generate 10 dates from 2015-01-01',
+            src => '[[prog]] 2015-01-01 -n 10',
+            src_plang => 'bash',
+            'x.doc.max_result_lines' => 5,
+        },
+        {
             summary => 'Generate dates with increment of 3 days',
             src => '[[prog]] 2015-01-01 2015-01-31 -i P3D',
             src_plang => 'bash',
