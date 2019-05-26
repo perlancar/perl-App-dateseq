@@ -1,3 +1,10 @@
+0.092   2019-05-26 (PERLANCAR)
+
+	- [ux] Make 'from' argument optional, defaults to today.
+
+	- [doc] Add/tweak examples.
+
+
 0.091   2019-05-24 (PERLANCAR)
 
 	- No functional changes.
