@@ -86,6 +86,13 @@ _
     },
     examples => [
         {
+            summary => 'Generate "infinite" dates from today',
+            src => '[[prog]]',
+            src_plang => 'bash',
+            test => 0,
+            'x.doc.show_result' => 0,
+        },
+        {
             summary => 'Generate dates from 2015-01-01 to 2015-01-31',
             src => '[[prog]] 2015-01-01 2015-01-31',
             src_plang => 'bash',
@@ -93,7 +100,7 @@ _
         },
         {
             summary => 'Generate dates from yesterday to 2 weeks from now',
-            src => '[[prog]] yesterday "in 2 weeks"',
+            src => '[[prog]] yesterday "2 weeks from now"',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 5,
         },
@@ -102,13 +109,6 @@ _
             src => '[[prog]] 2015-01-31 2015-01-01 -r',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 5,
-        },
-        {
-            summary => 'Generate "infinite" dates from 2015-01-01',
-            src => '[[prog]] 2015-01-01',
-            src_plang => 'bash',
-            test => 0,
-            'x.doc.show_result' => 0,
         },
         {
             summary => 'Generate "infinite" dates from 2015-01-01 (reverse)',
@@ -130,13 +130,13 @@ _
             'x.doc.max_result_lines' => 5,
         },
         {
-            summary => 'Generate first 20 business days after 2015-01-01',
+            summary => 'Generate first 20 business days (Mon-Fri) after 2015-01-01',
             src => '[[prog]] 2015-01-01 --business -n 20 -f "%Y-%m-%d(%a)"',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 10,
         },
         {
-            summary => 'Generate first 5 non-business days (Sat/Sun) after 2015-01-01',
+            summary => 'Generate first 5 non-business days (Sat-Sun) after 2015-01-01',
             src => '[[prog]] 2015-01-01 --no-business -n 5',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 5,
