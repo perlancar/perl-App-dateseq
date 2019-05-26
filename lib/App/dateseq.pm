@@ -30,7 +30,6 @@ _
                 'x.perl.coerce_to' => 'DateTime',
                 'x.perl.coerce_rules' => ['str_alami_en'],
             }],
-            req => 1,
             pos => 0,
         },
         to => {
@@ -179,6 +178,7 @@ sub dateseq {
 
     my %args = @_;
 
+    $args{from} //= DateTime->today;
     $args{increment} //= DateTime::Duration->new(days=>1);
     my $reverse = $args{reverse};
 
