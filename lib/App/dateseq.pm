@@ -58,6 +58,16 @@ _
             schema => ['bool*'],
             tags => ['category:filtering'],
         },
+        include_dow => {
+            summary => 'Only show dates with these day-of-weeks',
+            schema => 'date::dow_nums*',
+            tags => ['category:filtering'],
+        },
+        exclude_dow => {
+            summary => 'Only show dates with these day-of-weeks',
+            schema => 'date::dow_nums*',
+            tags => ['category:filtering'],
+        },
         business6 => {
             summary => 'Only list business days (Mon-Sat), '.
                 'or non-business days',
@@ -143,6 +153,18 @@ _
             'x.doc.max_result_lines' => 5,
         },
         {
+            summary => 'Show Mondays, Wednesdays, and Fridays between 2015-01-01 and 2015-02-28',
+            src => '[[prog]] 2015-01-01 2015-02-28 --include-dow Mo,We,Fr -f "%Y-%m-%d(%a)"',
+            src_plang => 'bash',
+            'x.doc.max_result_lines' => 5,
+        },
+        {
+            summary => 'Show dates (except Mondays) after 2015-01-01 and 2015-02-28',
+            src => '[[prog]] 2015-01-01 2015-02-28 --exclude-dow Mo -f "%Y-%m-%d(%a)"',
+            src_plang => 'bash',
+            'x.doc.max_result_lines' => 5,
+        },
+        {
             summary => 'Generate a CSV data',
             src => '[[prog]] 2010-01-01 2015-01-31 -f "%Y,%m,%d" --header "year,month,day"',
             src_plang => 'bash',
@@ -221,6 +243,14 @@ sub dateseq {
             } else {
                 return 0 if $dow <  7;
             }
+        }
+        if (defined $args{include_dow}) {
+            my $dt_dow = $dt->day_of_week;
+            return 0 unless grep { $dt_dow == $_ } @{ $args{include_dow} };
+        }
+        if (defined $args{exclude_dow}) {
+            my $dt_dow = $dt->day_of_week;
+            return 0 if     grep { $dt_dow == $_ } @{ $args{exclude_dow} };
         }
         1;
     };
