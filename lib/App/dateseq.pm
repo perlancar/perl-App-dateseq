@@ -56,11 +56,13 @@ _
             summary => 'Only list business days (Mon-Fri), '.
                 'or non-business days',
             schema => ['bool*'],
+            tags => ['category:filtering'],
         },
         business6 => {
             summary => 'Only list business days (Mon-Sat), '.
                 'or non-business days',
             schema => ['bool*'],
+            tags => ['category:filtering'],
         },
         header => {
             summary => 'Add a header row',
