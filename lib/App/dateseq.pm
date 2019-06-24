@@ -58,16 +58,29 @@ _
             schema => ['bool*'],
             tags => ['category:filtering'],
         },
+
         include_dow => {
             summary => 'Only show dates with these day-of-weeks',
             schema => 'date::dow_nums*',
             tags => ['category:filtering'],
         },
         exclude_dow => {
-            summary => 'Only show dates with these day-of-weeks',
+            summary => 'Do not show dates with these day-of-weeks',
             schema => 'date::dow_nums*',
             tags => ['category:filtering'],
         },
+
+        include_month => {
+            summary => 'Only show dates with these month numbers',
+            schema => 'date::month_nums*',
+            tags => ['category:filtering'],
+        },
+        exclude_month => {
+            summary => 'Do not show dates with these month numbers',
+            schema => 'date::month_nums*',
+            tags => ['category:filtering'],
+        },
+
         business6 => {
             summary => 'Only list business days (Mon-Sat), '.
                 'or non-business days',
@@ -251,6 +264,14 @@ sub dateseq {
         if (defined $args{exclude_dow}) {
             my $dt_dow = $dt->day_of_week;
             return 0 if     grep { $dt_dow == $_ } @{ $args{exclude_dow} };
+        }
+        if (defined $args{include_month}) {
+            my $dt_mon = $dt->month;
+            return 0 unless grep { $dt_mon == $_ } @{ $args{include_month} };
+        }
+        if (defined $args{exclude_dow}) {
+            my $dt_mon = $dt->month;
+            return 0 if     grep { $dt_mon == $_ } @{ $args{exclude_month} };
         }
         1;
     };
