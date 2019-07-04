@@ -208,6 +208,9 @@ _
             'x.doc.show_result' => 0,
         },
     ],
+    links => [
+        {url=>'prog:seq'},
+    ],
 };
 sub dateseq {
     require DateTime::Duration;
