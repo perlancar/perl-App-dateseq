@@ -286,9 +286,10 @@ sub dateseq {
         push @res, $args{header} if $args{header};
         my $dt = $args{from}->clone;
         while (1) {
+            #say "D:$dt vs $args{to}? ", DateTime->compare($dt, $args{to});
             if (defined $args{to}) {
-                last if  $reverse && DateTime->compare($dt, $args{to}) <  0;
-                last if !$reverse && DateTime->compare($dt, $args{to}) >= 0;
+                last if !$reverse && DateTime->compare($dt, $args{to}) > 0;
+                last if  $reverse && DateTime->compare($dt, $args{to}) < 0;
             }
             push @res, $strp->format_datetime($dt) if $code_filter->($dt);
             last if defined($args{limit}) && @res >= $args{limit};
