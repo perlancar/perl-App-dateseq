@@ -319,3 +319,10 @@ sub dateseq {
 
 1;
 # ABSTRACT:
+
+=head1 SEE ALSO
+
+L<durseq> from L<App::durseq> to produce sequence of date durations.
+
+Other sequence-generating programs/scripts: the Unix utility B<seq>, its Perl
+variant L<seq-pl> from L<App::seq::pl>.
