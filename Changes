@@ -1,3 +1,11 @@
+0.096   2019-07-16  Released-By: PERLANCAR; Urgency: medium
+
+	- [bugfix] When --to is specified, the date specified in --to was
+	  not included.
+
+	- Replace broken str_alami_en coercion with str_natural.
+
+
 0.095   2019-07-16  Released-By: PERLANCAR; Urgency: low
 
 	- No functional changes.
