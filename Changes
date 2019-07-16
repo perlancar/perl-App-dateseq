@@ -1,3 +1,10 @@
+0.095   2019-07-16  Released-By: PERLANCAR; Urgency: low
+
+	- No functional changes.
+
+        - [doc] Mention durseq, seq, seq-pl.
+
+
 0.094   2019-06-24  Released-By: PERLANCAR
 
 	- Add options: --include-month, --exclude-month.

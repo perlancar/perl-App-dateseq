@@ -209,7 +209,9 @@ _
         },
     ],
     links => [
+        {url=>'prog:durseq', summary=>'Produce sequence of date durations'},
         {url=>'prog:seq'},
+        {url=>'prog:seq-pl', summary=>'Perl variant of seq'},
     ],
 };
 sub dateseq {
@@ -322,10 +324,3 @@ sub dateseq {
 
 1;
 # ABSTRACT:
-
-=head1 SEE ALSO
-
-L<durseq> from L<App::durseq> to produce sequence of date durations.
-
-Other sequence-generating programs/scripts: the Unix utility B<seq>, its Perl
-variant L<seq-pl> from L<App::seq::pl>.
