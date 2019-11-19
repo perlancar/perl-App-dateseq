@@ -1,3 +1,9 @@
+0.098   2019-11-19  Released-By: PERLANCAR; Urgency: medium
+
+	- Now use DateTime::Format::Strftimeq instead of
+	  DateTime::Format::Strptime, for ease of custom formatting.
+
+
 0.097   2019-07-22  Released-By: PERLANCAR; Urgency: medium
 
 	- Allow using other DateTime::Format::* classes: rename
