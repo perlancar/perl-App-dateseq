@@ -195,12 +195,14 @@ _
             src => '[[prog]] 2015-01-01 2015-02-28 --include-dow Mo,We,Fr -f "%Y-%m-%d(%a)"',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 5,
+            'x.doc.show_result' => 0, # temp, coerce fail
         },
         {
             summary => 'Show dates (except Mondays) after 2015-01-01 and 2015-02-28',
             src => '[[prog]] 2015-01-01 2015-02-28 --exclude-dow Mo -f "%Y-%m-%d(%a)"',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 5,
+            'x.doc.show_result' => 0, # temp, coerce fail
         },
         {
             summary => 'Generate a CSV data',
