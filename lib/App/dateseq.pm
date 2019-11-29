@@ -105,6 +105,21 @@ _
 Default is `%Y-%m-%d`, unless when hour/minute/second is specified, then it is
 `%Y-%m-%dT%H:%M:%S`.
 
+`dateseq` actually uses <pm:DateTimeX::strftimeq>, so you can embed Perl code
+for flexibility. For example:
+
+    % dateseq 2019-11-19 2019-11-25 -f '%Y-%m-%d%( $_->day_of_week == 7 ? "su" : "" )q'
+
+will print something like:
+
+    2019-11-19
+    2019-11-20
+    2019-11-21
+    2019-11-22
+    2019-11-23
+    2019-11-24su
+    2019-11-25
+
 _
             schema => ['str*'],
             cmdline_aliases => {f=>{}},
@@ -243,7 +258,7 @@ _
 };
 sub dateseq {
     require DateTime::Duration;
-    require DateTime::Format::Strptime;
+    require DateTime::Format::Strftimeq;
 
     my %args = @_;
 
@@ -275,8 +290,8 @@ sub dateseq {
             }
             $has_hms ? '%Y-%m-%dT%H:%M:%S' : '%Y-%m-%d';
         };
-        $formatter = DateTime::Format::Strptime->new(
-            pattern => $strftime,
+        $formatter = DateTime::Format::Strftimeq->new(
+            format => $strftime,
         );
     }
 
