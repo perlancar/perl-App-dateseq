@@ -1,6 +1,8 @@
 package App::dateseq;
 
+# AUTHORITY
 # DATE
+# DIST
 # VERSION
 
 use 5.010001;
@@ -28,7 +30,7 @@ _
             summary => 'Starting date',
             schema => ['date*', {
                 'x.perl.coerce_to' => 'DateTime',
-                'x.perl.coerce_rules' => ['str_natural'],
+                'x.perl.coerce_rules' => ['From_str::natural'],
             }],
             pos => 0,
         },
@@ -36,7 +38,7 @@ _
             summary => 'End date, if not specified will generate an infinite* stream of dates',
             schema => ['date*', {
                 'x.perl.coerce_to' => 'DateTime',
-                'x.perl.coerce_rules' => ['str_natural'],
+                'x.perl.coerce_rules' => ['From_str::natural'],
             }],
             pos => 1,
         },
