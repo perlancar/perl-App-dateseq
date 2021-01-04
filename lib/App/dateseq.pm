@@ -249,6 +249,12 @@ _
             src_plang => 'bash',
             'x.doc.show_result' => 0,
         },
+        {
+            summary => 'Use %q (see DateTimeX::strftimeq)',
+            src => q{[[prog]] 2020-12-24 2021-01-15 -f '%Y-%m-%d%( $_->day_of_week == 7 ? "su" : "" )q'},
+            src_plang => 'bash',
+            'x.doc.max_result_lines' => 10,
+        },
     ],
     links => [
         {url=>'prog:durseq', summary=>'Produce sequence of date durations'},
