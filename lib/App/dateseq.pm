@@ -216,13 +216,13 @@ _
         },
         {
             summary => 'Show the first business day (Mon-Fri) of each month in 2021',
-            src => '[[prog]] 2021-01-01 2021-12-13 --business --limit-monthly 1 "%Y-%m-%d(%a)"',
+            src => '[[prog]] 2021-01-01 2021-12-13 --business --limit-monthly 1 -f "%Y-%m-%d(%a)"',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 10,
         },
         {
             summary => 'Show the last business day (Mon-Fri) of each month in 2021',
-            src => '[[prog]] 2021-12-31 2021-01-01 -r --business --limit-monthly 1 "%Y-%m-%d(%a)"',
+            src => '[[prog]] 2021-12-31 2021-01-01 -r --business --limit-monthly 1 -f "%Y-%m-%d(%a)"',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 10,
         },
