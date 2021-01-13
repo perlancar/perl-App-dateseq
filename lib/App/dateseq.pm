@@ -233,12 +233,22 @@ _
         },
         {
             summary => 'List non-holidays in 2015 (using Indonesian holidays)',
+            description => <<'_',
+
+See also <prog:dateseq-id> as alternative.
+
+_
             src => 'setop --diff <([[prog]] 2015-01-01 2015-12-31) <(list-id-holidays --year 2015)',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 10,
         },
         {
             summary => 'List non-holidays business days in 2015 (using Indonesian holidays)',
+            description => <<'_',
+
+See also <prog:dateseq-id> as alternative.
+
+_
             src => 'setop --diff <([[prog]] 2015-01-01 2015-12-31 --business) <(list-id-holidays --year 2015)',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 10,
@@ -258,6 +268,7 @@ _
     ],
     links => [
         {url=>'prog:durseq', summary=>'Produce sequence of date durations'},
+        {url=>'prog:dateseq-id', summary=>'A wrapper for dateseq, with built-in support for Indonesian holidays'},
         {url=>'prog:seq'},
         {url=>'prog:seq-pl', summary=>'Perl variant of seq'},
     ],
