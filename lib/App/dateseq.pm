@@ -370,6 +370,10 @@ sub dateseq {
             return 0 if     grep { $dt_mon == $_ } @{ $args{exclude_month} };
         }
 
+        if ($args{_filter}) {
+            return 0 unless $args{_filter}->($dt, \%args);
+        }
+
         if ($args{limit_yearly}) {
             my $key = $dt->year;
             return 0 if ++$seen_years{$key} > $args{limit_yearly};
