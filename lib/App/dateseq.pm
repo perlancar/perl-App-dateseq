@@ -259,7 +259,7 @@ _
 See also <prog:dateseq-id> as alternative.
 
 _
-            src => 'setop --diff <([[prog]] 2015-01-01 2015-12-31) <(list-id-holidays --year 2015)',
+            src => 'setop --diff <([[prog]] 2015-01-01 2015-12-31) <(list-idn-holidays --year 2015)',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 10,
         },
@@ -270,7 +270,7 @@ _
 See also <prog:dateseq-id> as alternative.
 
 _
-            src => 'setop --diff <([[prog]] 2015-01-01 2015-12-31 --business) <(list-id-holidays --year 2015)',
+            src => 'setop --diff <([[prog]] 2015-01-01 2015-12-31 --business) <(list-idn-holidays --year 2015)',
             src_plang => 'bash',
             'x.doc.max_result_lines' => 10,
         },
