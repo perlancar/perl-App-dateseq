@@ -2,6 +2,8 @@
 
         - No functional changes.
 
+        - [example] Update example: list-id-holidays -> list-idn-holidays.
+
         - [build] Rebuild with updated toolchain to prettify usage in POD and
           move examples to separate EXAMPLES POD section.
 
