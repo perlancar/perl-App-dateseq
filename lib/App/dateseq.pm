@@ -1,13 +1,15 @@
 package App::dateseq;
 
+use 5.010001;
+use strict;
+use warnings;
+
+use Scalar::Util qw(blessed);
+
 # AUTHORITY
 # DATE
 # DIST
 # VERSION
-
-use 5.010001;
-use strict;
-use warnings;
 
 our %SPEC;
 
@@ -156,6 +158,18 @@ _
             schema => ['hash'],
             tags => ['category:formatting'],
         },
+        eval => {
+            summary => 'Run perl code for each date',
+            schema => 'str*',
+            tags => ['category:output'],
+            cmdline_aliases => {e=>{}},
+            description => <<'_',
+
+Specified perl code will receive the date as DateTime object in `$_`and expected
+to return result to print.
+
+_
+        },
     },
     examples => [
         {
@@ -286,6 +300,12 @@ _
             src_plang => 'bash',
             'x.doc.max_result_lines' => 10,
         },
+        {
+            summary => 'Print first and last days of each month of 2021',
+            src => q{[[prog]] 2021-01-01 2021-12-01 -e 'print $_->ymd, " "; $_->add(months=>1); $_->add(days => -1); print $_->ymd'},
+            src_plang => 'bash',
+            'x.doc.max_result_lines' => 10,
+        },
     ],
     links => [
         {url=>'prog:durseq', summary=>'Produce sequence of date durations'},
@@ -386,6 +406,28 @@ sub dateseq {
         1;
     };
 
+    my $_eval_code;
+    if ($args{eval}) {
+        $_eval_code = eval "package main; sub { no strict; no warnings; $args{eval} }";
+        die "Can't compile Perl code '$args{eval}': $@" if $@;
+    }
+
+    my $_format = sub {
+        my $dt = shift;
+        if ($_eval_code) {
+            my $res;
+            {
+                local $_ = $dt;
+                $res = $_eval_code->();
+                $res = $_ unless $res;
+                $res = $formatter->format_datetime($res) if blessed($res);
+            }
+            $res;
+        } else {
+            $formatter->format_datetime($dt);
+        }
+    };
+
     if (defined $args{to} || defined $args{limit}) {
         my @res;
         push @res, $args{header} if $args{header};
@@ -396,7 +438,7 @@ sub dateseq {
                 last if !$reverse && DateTime->compare($dt, $args{to}) > 0;
                 last if  $reverse && DateTime->compare($dt, $args{to}) < 0;
             }
-            push @res, $formatter->format_datetime($dt) if $code_filter->($dt);
+            push @res, $_format->($dt) if $code_filter->($dt);
             last if defined($args{limit}) && @res >= $args{limit};
             $dt = $reverse ? $dt - $args{increment} : $dt + $args{increment};
         }
@@ -422,7 +464,7 @@ sub dateseq {
                 return undef unless defined $dt;
                 last if $code_filter->($dt);
             }
-            $formatter->format_datetime($dt);
+            $_format->($dt);
         };
         return [200, "OK", $filtered_func, {schema=>'str*', stream=>1}];
     }
