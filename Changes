@@ -1,3 +1,8 @@
+0.105   2021-09-24  Released-By: PERLANCAR; Urgency: medium
+
+	- Add option --eval (-e).
+
+
 0.104   2021-08-22  Released-By: PERLANCAR; Urgency: low
 
         - No functional changes.

@@ -302,7 +302,13 @@ _
         },
         {
             summary => 'Print first and last days of each month of 2021',
-            src => q{[[prog]] 2021-01-01 2021-12-01 -e 'print $_->ymd, " "; $_->add(months=>1); $_->add(days => -1); print $_->ymd'},
+            src => q{[[prog]] 2021-01-01 2021-12-01 --increment '1 month' -e 'my $dt2 = $_->clone; $dt2->add(months=>1); $dt2->add(days => -1); $_->ymd . " " . $dt2->ymd'},
+            src_plang => 'bash',
+            'x.doc.max_result_lines' => 10,
+        },
+        {
+            summary => 'Print first and last timestamp (in ISO format) of each month of 2021',
+            src => q{[[prog]] 2021-01-01 2021-12-01 --increment '1 month' -e 'my $dt2 = $_->clone; $dt2->add(months=>1); $dt2->add(days => -1); $_->ymd . "T00:00:00 " . $dt2->ymd . "T23:59:59"'},
             src_plang => 'bash',
             'x.doc.max_result_lines' => 10,
         },
@@ -408,7 +414,7 @@ sub dateseq {
 
     my $_eval_code;
     if ($args{eval}) {
-        $_eval_code = eval "package main; sub { no strict; no warnings; $args{eval} }";
+        $_eval_code = eval "package main; sub { no strict; no warnings; $args{eval} }"; ## no critic: BuiltinFunctions::ProhibitStringyEval
         die "Can't compile Perl code '$args{eval}': $@" if $@;
     }
 
@@ -461,7 +467,7 @@ sub dateseq {
         my $filtered_func = sub {
             while (1) {
                 my $dt = $func0->();
-                return undef unless defined $dt;
+                return undef unless defined $dt; ## no critic: Subroutines::ProhibitExplicitReturnUndef
                 last if $code_filter->($dt);
             }
             $_format->($dt);
