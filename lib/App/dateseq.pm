@@ -488,7 +488,7 @@ sub dateseq {
         my $next_dt;
         #my $finish;
         my $func0 = sub {
-            #return undef if $finish;
+            #return if $finish;
             return $args{header} if $num_dates == 0 && $args{header};
             return if $num_dates++ >= $args{limit};
             if ($random) {
@@ -505,7 +505,7 @@ sub dateseq {
         my $filtered_func = sub {
             while (1) {
                 my $dt = $func0->();
-                return unless defined $dt; ## no critic: Subroutines::ProhibitExplicitReturnUndef
+                return unless defined $dt;
                 last if $code_filter->($dt);
             }
             $_format->($dt);
