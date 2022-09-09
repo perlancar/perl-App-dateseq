@@ -345,7 +345,7 @@ sub dateseq {
 
     my $random = $args{random};
     return [412, "If you specify --random, you must also specify --from *and* --to"]
-        unless $args{to};
+        if $random && !$args{to};
 
     my $formatter;
     if (my $cl = $args{format_class}) {
