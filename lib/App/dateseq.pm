@@ -96,7 +96,7 @@ _
             schema => 'str*',
         },
         limit => {
-            summary => 'Only generate a certain amount of numbers',
+            summary => 'Only generate a certain amount of dates',
             schema => ['posint*'],
             cmdline_aliases => {n=>{}},
         },
