@@ -384,7 +384,7 @@ sub dateseq {
 
     my %seen_years;  # key=year (e.g. 2021), val=int
     my %seen_months; # key=year-mon (e.g. 2021-01), val=int
-    my $num_dates = $args{header} ? -1 : 0;
+    my $num_dates = 0;
     my $code_filter = sub {
         my $dt = shift;
         if (defined $args{business}) {
@@ -467,17 +467,19 @@ sub dateseq {
 
     if ((defined $args{to} || defined $args{limit}) && !$random) {
         my @res;
-        push @res, $args{header} if $args{header};
+        push @res, $args{header} if defined $args{header};
         my $dt = $args{from}->clone;
         while (1) {
+            last if defined($args{limit}) && $num_dates >= $args{limit};
             #say "D:$dt vs $args{to}? ", DateTime->compare($dt, $args{to});
             if (defined $args{to}) {
                 last if !$reverse && DateTime->compare($dt, $args{to}) > 0;
                 last if  $reverse && DateTime->compare($dt, $args{to}) < 0;
             }
-            push @res, $_format->($dt) if $code_filter->($dt);
-            last if defined($args{limit}) && @res >= $args{limit};
-            $num_dates++;
+            if ($code_filter->($dt)) {
+                push @res, $_format->($dt);
+                $num_dates++;
+            }
             $dt = $reverse ? $dt - $args{increment} : $dt + $args{increment};
         }
         return [200, "OK", \@res];
@@ -485,32 +487,25 @@ sub dateseq {
         # stream
         # --random always goes here
         my $dt = $args{from}->clone;
-        my $next_dt;
-        #my $finish;
-        my $func0 = sub {
-            #return if $finish;
-            return $args{header} if $num_dates == 0 && $args{header};
-            return if $num_dates++ >= $args{limit};
+        my $has_printed_header;
+        my $func = sub {
+            return $args{header} if defined $args{header} && !$has_printed_header++;
+            return if defined $args{limit} && $num_dates++ >= $args{limit};
+          REPEAT:
             if ($random) {
                 $dt = $args{from}->clone->add(seconds => $num_secs * rand());
-                return $dt;
+            }
+            goto REPEAT unless $code_filter->($dt);
+            my $res = $_format->($dt);
+
+            if ($random) {
             } else {
-                $dt = $next_dt;
-                $next_dt = $reverse ?
+                $dt = $reverse ?
                     $dt - $args{increment} : $dt + $args{increment};
-                #$finish = 1 if ...
-                return $dt;
             }
+            $res;
         };
-        my $filtered_func = sub {
-            while (1) {
-                my $dt = $func0->();
-                return unless defined $dt;
-                last if $code_filter->($dt);
-            }
-            $_format->($dt);
-        };
-        return [200, "OK", $filtered_func, {schema=>'str*', stream=>1}];
+        return [200, "OK", $func, {schema=>'str*', stream=>1}];
     }
 }
 
