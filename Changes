@@ -1,3 +1,8 @@
+0.110   2022-09-09  Released-By: PERLANCAR; Urgency: high
+
+        - [bugfix] Fix a couple of bug fixes.
+
+
 0.109   2022-09-09  Released-By: PERLANCAR; Urgency: high
 
         - [bugfix] --random didn't observe --limit
