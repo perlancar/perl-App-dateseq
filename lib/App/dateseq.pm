@@ -325,6 +325,12 @@ _
             src_plang => 'bash',
             'x.doc.show_result' => 0,
         },
+        {
+            summary => 'Generate 100 random dates between a certain range',
+            src => q{[[prog]] --random --from "1 year ago" --to "1 year from now" --limit 100},
+            src_plang => 'bash',
+            'x.doc.max_result_lines' => 5,
+        },
     ],
     links => [
         {url=>'prog:durseq', summary=>'Produce sequence of date durations'},
@@ -378,6 +384,7 @@ sub dateseq {
 
     my %seen_years;  # key=year (e.g. 2021), val=int
     my %seen_months; # key=year-mon (e.g. 2021-01), val=int
+    my $num_dates = $args{header} ? -1 : 0;
     my $code_filter = sub {
         my $dt = shift;
         if (defined $args{business}) {
@@ -470,6 +477,7 @@ sub dateseq {
             }
             push @res, $_format->($dt) if $code_filter->($dt);
             last if defined($args{limit}) && @res >= $args{limit};
+            $num_dates++;
             $dt = $reverse ? $dt - $args{increment} : $dt + $args{increment};
         }
         return [200, "OK", \@res];
@@ -477,17 +485,17 @@ sub dateseq {
         # stream
         # --random always goes here
         my $dt = $args{from}->clone;
-        my $j  = $args{header} ? -1 : 0;
         my $next_dt;
         #my $finish;
         my $func0 = sub {
             #return undef if $finish;
-            return $args{header} if $j == 0 && $args{header};
+            return $args{header} if $num_dates == 0 && $args{header};
+            return if $num_dates++ >= $args{limit};
             if ($random) {
                 $dt = $args{from}->clone->add(seconds => $num_secs * rand());
                 return $dt;
             } else {
-                $dt = $next_dt if $j++ > 0;
+                $dt = $next_dt;
                 $next_dt = $reverse ?
                     $dt - $args{increment} : $dt + $args{increment};
                 #$finish = 1 if ...
@@ -497,7 +505,7 @@ sub dateseq {
         my $filtered_func = sub {
             while (1) {
                 my $dt = $func0->();
-                return undef unless defined $dt; ## no critic: Subroutines::ProhibitExplicitReturnUndef
+                return unless defined $dt; ## no critic: Subroutines::ProhibitExplicitReturnUndef
                 last if $code_filter->($dt);
             }
             $_format->($dt);
