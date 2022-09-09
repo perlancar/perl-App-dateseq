@@ -100,6 +100,19 @@ _
             schema => ['posint*'],
             cmdline_aliases => {n=>{}},
         },
+        random => {
+            summary => 'Instead of incrementing/decrementing monotonically, generate random date between --to and --from',
+            schema => ['true*'],
+            description => <<'_',
+
+If you specify this, you have to specify `--to` *and* `--from`.
+
+Also, currently, if you also specify `--limit-yearly` or `--limit-monthly`, the
+script may hang because it runs out of dates, so be careful when specifying
+these options combined.
+
+_
+        },
         limit_yearly => {
             summary => 'Only output at most this number of dates for each year',
             schema => ['posint*'],
@@ -330,6 +343,10 @@ sub dateseq {
     $args{increment} //= DateTime::Duration->new(days=>1);
     my $reverse = $args{reverse};
 
+    my $random = $args{random};
+    return [412, "If you specify --random, you must also specify --from *and* --to"]
+        unless $args{to};
+
     my $formatter;
     if (my $cl = $args{format_class}) {
         $cl = "DateTime::Format::$cl";
@@ -434,7 +451,14 @@ sub dateseq {
         }
     };
 
-    if (defined $args{to} || defined $args{limit}) {
+    my $num_secs;
+    if ($random) {
+        my $epoch_from = $args{from}->epoch;
+        my $epoch_to   = $args{to}->epoch;
+        $num_secs = $epoch_to-$epoch_from;
+    }
+
+    if ((defined $args{to} || defined $args{limit}) && !$random) {
         my @res;
         push @res, $args{header} if $args{header};
         my $dt = $args{from}->clone;
@@ -451,18 +475,24 @@ sub dateseq {
         return [200, "OK", \@res];
     } else {
         # stream
+        # --random always goes here
         my $dt = $args{from}->clone;
         my $j  = $args{header} ? -1 : 0;
         my $next_dt;
         #my $finish;
         my $func0 = sub {
             #return undef if $finish;
-            $dt = $next_dt if $j++ > 0;
             return $args{header} if $j == 0 && $args{header};
-            $next_dt = $reverse ?
-                $dt - $args{increment} : $dt + $args{increment};
-            #$finish = 1 if ...
-            return $dt;
+            if ($random) {
+                $dt = $args{from}->clone->add(seconds => $num_secs * rand());
+                return $dt;
+            } else {
+                $dt = $next_dt if $j++ > 0;
+                $next_dt = $reverse ?
+                    $dt - $args{increment} : $dt + $args{increment};
+                #$finish = 1 if ...
+                return $dt;
+            }
         };
         my $filtered_func = sub {
             while (1) {
